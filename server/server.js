@@ -28,13 +28,20 @@ io.on('connection', (socket) => {
 //create custom event, Listener(listen to "createEmail" event)
 socket.on('createMessage', (email) => {
     console.log('from client: ',email)
+ //emit message to all connected user
+    io.emit('newMessage', {
+        from: email.from,
+        text: email.text,
+        createdAt: new Date().getDate()
+    })
 })
 //create event emitter, custom event
-socket.emit('newMessage', {
-    from: 'pro.digmatema@gmail.com',
-    texr: 'Socket.io is the best',
-    createdAt: '13:00'
-})
+//emit message a single user
+// socket.emit('newMessage', {
+//     from: 'pro.digmatema@gmail.com',
+//     texr: 'Socket.io is the best',
+//     createdAt: '13:00'
+// })
 
 })
 
