@@ -9,5 +9,5 @@ console.log(email)
 
 
 socket.on('disconnect', function () {
-    console.log('disconnected from the server')
+    console.log('disconnected from the server...')
 })
