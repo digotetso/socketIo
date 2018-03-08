@@ -31,32 +31,36 @@ socket.on('newLocationMessage', function(message) {
 })
 //select form by id
 //create event listener
-
+  var messageTextbox =$('[name=message]')
+  
     $("#message-button" ).click(function() {
         $( "#message-form" ).submit();
         socket.emit('createMessage', {
             from: 'Morning ',
-            text: $('[name=message]').val()
+            text: messageTextbox.val()
         }, () => {
             console.log('everything went well..')
+            messageTextbox.val('')
+            
         }
         )
-        $('[name=message]').val()
     });
 
 
-
-    $("#location-button" ).click(function(){
+  var locationButton = $("#location-button")
+    locationButton.click(function(){
         if(!navigator.geolocation){
             return alert('Your broswer does not support location service')
         }
-
+        locationButton.attr('disabled', 'disabled').text('sending location...')
         navigator.geolocation.getCurrentPosition(function(myLocation) {
+            locationButton.removeAttr('disabled').text('send location')
             socket.emit('currentLocation', {
                 latitude: myLocation.coords.latitude,
                 longitude: myLocation.coords.longitude
             })
         }, function() {
+            locationButton.attr('disabled', 'disabled').text('Send location')
             alert('cannot fetch location data')
         })
     })
