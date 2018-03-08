@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const socketIO = require('socket.io');
 const http = require('http')
 
+const {generateMessage} = require('./utils/message')
+
 var port = process.env.PORT || 3000;
 
 var app = express()
@@ -22,18 +24,20 @@ var io = socketIO(server)
 //listen to connection event
 io.on('connection', (socket) => {
     console.log('server connected')
+
+   socket.emit('newMessage', generateMessage('Admin', 'Welcome to chatApp'))
+
+   socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined the group'))
+
     socket.on('disconnect', () => {
         console.log('Server disconnected...')
     })
 //create custom event, Listener(listen to "createEmail" event)
-socket.on('createMessage', (email) => {
+socket.on('createMessage', (email, callback) => {
     console.log('from client: ',email)
  //emit message to all connected user
-    io.emit('newMessage', {
-        from: email.from,
-        text: email.text,
-        createdAt: new Date().getDate()
-    })
+    io.emit('newMessage', generateMessage(email.from, email.text))
+    callback()
 })
 //create event emitter, custom event
 //emit message a single user
