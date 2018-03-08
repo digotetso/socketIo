@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const socketIO = require('socket.io');
 const http = require('http')
 
-const {generateMessage} = require('./utils/message')
+const {generateMessage,generateLocationMessage} = require('./utils/message')
 
 var port = process.env.PORT || 3000;
 
@@ -39,15 +39,14 @@ socket.on('createMessage', (email, callback) => {
     io.emit('newMessage', generateMessage(email.from, email.text))
     callback()
 })
-//create event emitter, custom event
-//emit message a single user
-// socket.emit('newMessage', {
-//     from: 'pro.digmatema@gmail.com',
-//     texr: 'Socket.io is the best',
-//     createdAt: '13:00'
-// })
+
+socket.on('currentLocation', (coords) =>{
+  io.emit('newLocationMessage', generateLocationMessage('Admin',coords.latitude,coords.longitude))
+})
 
 })
+
+
 
 
 server.listen(port, () => {
