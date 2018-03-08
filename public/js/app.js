@@ -4,10 +4,12 @@ socket.on('connect' , function () {
 console.log('New user connected')
 })
 socket.on('newMessage', function(message) {
+
+var formattedTime = moment(message.createdAt).format('h:mm A')
 console.log(message)
 //create element(li) with jQuery
 var li = $('<li></li>')
-li.text(`${message.from}: ${message.text}`)
+li.text(`${message.from} ${formattedTime}: ${message.text}`)
 //select element of id="message"
 $('#message').append(li)
 })
@@ -19,9 +21,10 @@ socket.on('disconnect', function () {
 
 
 socket.on('newLocationMessage', function(message) {
+    var formattedLocationTime = moment(message.createdAt).format('h:mm A')
     var li = $('<li></li>')
     var a = $('<a target="_blank">My current location</a>') //_blank --> will open link in different tab
-    li.text(`${message.from}`)  
+    li.text(`${message.from}: ${formattedLocationTime} `)  
     a.attr('href', message.url)  //set href= massage.url
     li.append(a)
     $('#message').append(li)
