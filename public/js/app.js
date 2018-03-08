@@ -7,11 +7,23 @@ socket.on('newMessage', function(message) {
 
 var formattedTime = moment(message.createdAt).format('h:mm A')
 console.log(message)
+
+var template = $('#message-template').html() // html() --> will return html tag inside template(script)
+
+var html = Mustache.render(template, {
+    text: message.text,
+    from: message.from,
+    createdAt: formattedTime
+
+});
+
+$('#message').append(html)
+
 //create element(li) with jQuery
-var li = $('<li></li>')
-li.text(`${message.from} ${formattedTime}: ${message.text}`)
-//select element of id="message"
-$('#message').append(li)
+// var li = $('<li></li>')
+// li.text(`${message.from} ${formattedTime}: ${message.text}`)
+// //select element of id="message"
+// $('#message').append(li)
 })
 
 
@@ -22,12 +34,22 @@ socket.on('disconnect', function () {
 
 socket.on('newLocationMessage', function(message) {
     var formattedLocationTime = moment(message.createdAt).format('h:mm A')
-    var li = $('<li></li>')
-    var a = $('<a target="_blank">My current location</a>') //_blank --> will open link in different tab
-    li.text(`${message.from}: ${formattedLocationTime} `)  
-    a.attr('href', message.url)  //set href= massage.url
-    li.append(a)
-    $('#message').append(li)
+
+   var template = $('#message-location-template').html()
+   var html = Mustache.render(template, {
+       from: message.from,
+       createdAt: formattedLocationTime,
+       url: message.url
+       
+   })
+
+    // var li = $('<li></li>')
+    // var a = $('<a target="_blank">My current location</a>') //_blank --> will open link in different tab
+    // li.text(`${message.from}: ${formattedLocationTime} `)  
+    // a.attr('href', message.url)  //set href= massage.url
+    // li.append(a)
+
+    $('#message').append(html)
     
 
 
@@ -39,7 +61,7 @@ socket.on('newLocationMessage', function(message) {
     $("#message-button" ).click(function() {
         $( "#message-form" ).submit();
         socket.emit('createMessage', {
-            from: 'Morning ',
+            from: 'Dee ',
             text: messageTextbox.val()
         }, () => {
             console.log('everything went well..')
